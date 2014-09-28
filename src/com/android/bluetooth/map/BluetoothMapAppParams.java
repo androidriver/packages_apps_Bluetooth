@@ -457,7 +457,7 @@ public class BluetoothMapAppParams {
         if (getNotificationStatus() != INVALID_VALUE_PARAMETER) {
             appParamBuf.put((byte) NOTIFICATION_STATUS);
             appParamBuf.put((byte) NOTIFICATION_STATUS_LEN);
-            appParamBuf.putShort((short) getNotificationStatus());
+            appParamBuf.put((byte) getNotificationStatus());
         }
         if (getMasInstanceId() != INVALID_VALUE_PARAMETER) {
             appParamBuf.put((byte) MAS_INSTANCE_ID);

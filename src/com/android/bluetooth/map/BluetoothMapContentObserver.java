@@ -139,7 +139,7 @@ public class BluetoothMapContentObserver {
             if (V) Log.d(TAG, "onChange on thread: " + Thread.currentThread().getId()
                 + " Uri: " + uri.toString() + " selfchange: " + selfChange);
 
-            handleMsgListChanges();
+//            handleMsgListChanges();
         }
     };
 
@@ -251,6 +251,13 @@ public class BluetoothMapContentObserver {
         initMsgList();
     }
 
+    public void registerObserver() {
+        if (V) Log.d(TAG, "registerObserver");
+        /* Use MmsSms Uri since the Sms Uri is not notified on deletes */
+        mResolver.registerContentObserver(MmsSms.CONTENT_URI, false, mObserver);
+        //initMsgList();
+    }
+    
     public void unregisterObserver() {
         if (V) Log.d(TAG, "unregisterObserver");
         mResolver.unregisterContentObserver(mObserver);
@@ -636,23 +643,31 @@ public class BluetoothMapContentObserver {
     public long pushMessage(BluetoothMapbMessage msg, String folder,
         BluetoothMapAppParams ap) throws IllegalArgumentException {
         if (D) Log.d(TAG, "pushMessage");
-        ArrayList<BluetoothMapbMessage.vCard> recipientList = msg.getRecipients();
+//        ArrayList<BluetoothMapbMessage.vCard> recipientList = msg.getRecipients();
+        ArrayList<BluetoothMapbMessage.vCard> originatorList = msg.getOriginators();
         int transparent = (ap.getTransparent() == BluetoothMapAppParams.INVALID_VALUE_PARAMETER) ?
                 0 : ap.getTransparent();
         int retry = ap.getRetry();
         int charset = ap.getCharset();
         long handle = -1;
 
-        if (recipientList == null) {
-            Log.d(TAG, "empty recipient list");
+//        if (recipientList == null) {
+//            Log.d(TAG, "empty recipient list");
+//            return -1;
+//        }
+        if (originatorList == null) {
+            Log.d(TAG, "empty originatorList list");
             return -1;
         }
 
-        for (BluetoothMapbMessage.vCard recipient : recipientList) {
-            if(recipient.getEnvLevel() == 0) // Only send the message to the top level recipient
+//        for (BluetoothMapbMessage.vCard recipient : recipientList) {
+        for (BluetoothMapbMessage.vCard originator : originatorList) {
+//            if(recipient.getEnvLevel() == 0) // Only send the message to the top level recipient
+            if(originator.getEnvLevel() == 0) // Only send the message to the top level recipient
             {
                 /* Only send to first address */
-                String phone = recipient.getFirstPhoneNumber();
+//                String phone = recipient.getFirstPhoneNumber();
+                String phone = originator.getFirstPhoneNumber();
                 boolean read = false;
                 boolean deliveryReport = true;
 

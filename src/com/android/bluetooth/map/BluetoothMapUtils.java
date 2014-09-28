@@ -14,6 +14,14 @@
 */
 package com.android.bluetooth.map;
 
+import java.io.IOException;
+import java.util.Arrays;
+
+import javax.obex.HeaderSet;
+import javax.obex.ObexHelper;
+
+import android.util.Log;
+
 
 /**
  * Various utility methods and generic defines that can be used throughout MAPS
@@ -111,6 +119,37 @@ public class BluetoothMapUtils {
             return TYPE.SMS_CDMA;
 
         throw new IllegalArgumentException("Message type not found in handle string.");
+    }
+
+	static final void logHeader(HeaderSet hs) {
+		Log.i(TAG, "Dumping HeaderSet " + hs.toString());
+		try {
+			if (hs.getHeader(HeaderSet.CONNECTION_ID) == null) {
+				Log.i(TAG, "CONNECTION_ID : " + hs.getHeader(HeaderSet.CONNECTION_ID));
+			} else {
+				Log.i(TAG, "CONNECTION_ID : " + ObexHelper.convertToLong(((byte[])hs.getHeader(HeaderSet.CONNECTION_ID))));
+			}
+			Log.i(TAG, "NAME : " + hs.getHeader(HeaderSet.NAME));
+			Log.i(TAG, "TYPE : " + hs.getHeader(HeaderSet.TYPE));
+			if (hs.getHeader(HeaderSet.TARGET) == null) {
+				Log.i(TAG, "TARGET : " + hs.getHeader(HeaderSet.TARGET));
+			} else {
+				Log.i(TAG, "TARGET : " + Arrays.toString(((byte[])hs.getHeader(HeaderSet.TARGET))));
+			}
+			if (hs.getHeader(HeaderSet.WHO) == null) {
+				Log.i(TAG, "WHO : " + hs.getHeader(HeaderSet.WHO));
+			} else {
+				Log.i(TAG, "WHO : " + Arrays.toString(((byte[])hs.getHeader(HeaderSet.WHO))));
+			}
+			if (hs.getHeader(HeaderSet.APPLICATION_PARAMETER) == null) {
+				Log.i(TAG, "APPLICATION_PARAMETER : " + hs.getHeader(HeaderSet.APPLICATION_PARAMETER));
+			} else {
+				Log.i(TAG, "APPLICATION_PARAMETER : " + Arrays.toString(((byte[])hs.getHeader(HeaderSet.APPLICATION_PARAMETER))));
+			}
+		} catch (IOException e) {
+            Log.e(TAG, "dump HeaderSet error " + e);
+        }
+        Log.i(TAG, "NEW!!! Dumping HeaderSet END");
     }
 }
 

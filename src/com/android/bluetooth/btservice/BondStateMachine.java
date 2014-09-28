@@ -22,6 +22,8 @@ import android.bluetooth.BluetoothDevice;
 import com.android.bluetooth.a2dp.A2dpService;
 import com.android.bluetooth.hid.HidService;
 import com.android.bluetooth.hfp.HeadsetService;
+import com.android.bluetooth.map.BluetoothMapService;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
@@ -302,6 +304,7 @@ final class BondStateMachine extends StateMachine {
         HidService hidService = HidService.getHidService();
         A2dpService a2dpService = A2dpService.getA2dpService();
         HeadsetService headsetService = HeadsetService.getHeadsetService();
+        BluetoothMapService mapService = BluetoothMapService.getBluetoothMapService();
 
         if ((hidService != null) &&
             (hidService.getPriority(device) == BluetoothProfile.PRIORITY_UNDEFINED)){
@@ -317,12 +320,18 @@ final class BondStateMachine extends StateMachine {
             (headsetService.getPriority(device) == BluetoothProfile.PRIORITY_UNDEFINED)){
             headsetService.setPriority(device,BluetoothProfile.PRIORITY_ON);
         }
+        
+        if ((mapService != null) &&
+                (mapService.getPriority(device) == BluetoothProfile.PRIORITY_UNDEFINED)){
+        	mapService.setPriority(device,BluetoothProfile.PRIORITY_ON);
+        }
     }
 
     private void clearProfilePriorty (BluetoothDevice device){
         HidService hidService = HidService.getHidService();
         A2dpService a2dpService = A2dpService.getA2dpService();
         HeadsetService headsetService = HeadsetService.getHeadsetService();
+        BluetoothMapService mapService = BluetoothMapService.getBluetoothMapService();
 
         if (hidService != null)
             hidService.setPriority(device,BluetoothProfile.PRIORITY_UNDEFINED);
@@ -330,6 +339,8 @@ final class BondStateMachine extends StateMachine {
             a2dpService.setPriority(device,BluetoothProfile.PRIORITY_UNDEFINED);
         if(headsetService != null)
             headsetService.setPriority(device,BluetoothProfile.PRIORITY_UNDEFINED);
+        if(mapService != null)
+        	mapService.setPriority(device,BluetoothProfile.PRIORITY_UNDEFINED);
     }
 
     private void infoLog(String msg) {
